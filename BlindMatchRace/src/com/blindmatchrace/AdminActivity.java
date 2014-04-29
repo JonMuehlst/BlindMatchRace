@@ -34,7 +34,7 @@ import android.widget.TextView;
  *
  */
 public class AdminActivity extends FragmentActivity implements LocationListener, OnClickListener {
-	//this is a branch
+	//this is a branch testerrrr
 	// Application variables.
 	private String user = "", event = "";
 	private LocationManager locationManager;
