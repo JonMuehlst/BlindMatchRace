@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
-                android:layout_weight="20"
+                android:layout_weight="10"
                 android:gravity="center_vertical"
                 android:text="User name: "
                 android:textStyle="bold" />
@@ -68,8 +68,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
-                android:layout_weight="20"
+                android:layout_weight="10"
                 android:text="" />
+            
+            <!-- -->  
+            <Button
+                android:id="@+id/buttonSpeak"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="20"
+                android:text="Speak" />
+                
         </LinearLayout>
 
         <LinearLayout

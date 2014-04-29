@@ -72,27 +72,32 @@ public class MenuActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		Intent intent;
-		int id = v.getId();
-		if (id == R.id.bMap) {
+		switch (v.getId()) {
+		case R.id.bMap:
 			intent = new Intent(MenuActivity.this, MainActivity.class);
 			intent.putExtra(C.USER_NAME, user);
 			intent.putExtra(C.USER_PASS, pass);
 			intent.putExtra(C.EVENT_NUM, event);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
-		} else if (id == R.id.bKml1) {
+			break;
+		case R.id.bKml1:
 			bKml1.setEnabled(false);
 			Toast.makeText(this, "Please wait few seconds...", Toast.LENGTH_SHORT).show();
+
 			// AsyncTask for saving the KML file on SD memory (with time stamp).
 			SaveKmlTask saveKml1 = new SaveKmlTask(this, "SaveKmlTask", fullUserName, 1);
 			saveKml1.execute(C.URL_HISTORY_TABLE, C.URL_CLIENTS_TABLE);
-		} else if (id == R.id.bKml2) {
+			break;
+		case R.id.bKml2:
 			bKml2.setEnabled(false);
 			Toast.makeText(this, "Please wait few seconds...", Toast.LENGTH_SHORT).show();
+
 			// AsyncTask for saving the KML file on SD memory (only path).
 			SaveKmlTask saveKml2 = new SaveKmlTask(this, "SaveKmlTask", fullUserName, 2);
 			saveKml2.execute(C.URL_HISTORY_TABLE, C.URL_CLIENTS_TABLE);
-		} else if (id == R.id.bLogout) {
+			break;
+		case R.id.bLogout:
 			// Updates the SharedPreferences.
 			SharedPreferences sp = getSharedPreferences(C.PREFS_USER, MODE_PRIVATE);
 			SharedPreferences.Editor spEdit = sp.edit();
@@ -102,8 +107,10 @@ public class MenuActivity extends Activity implements OnClickListener {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			finish();
-		} else if (id == R.id.bExit) {
+			break;
+		case R.id.bExit:
 			finish();
+			break;
 		}
 	}
 }

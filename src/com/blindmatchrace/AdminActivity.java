@@ -1,19 +1,14 @@
 package com.blindmatchrace;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.blindmatchrace.classes.C;
-import com.blindmatchrace.classes.GetBuoysTask;
-import com.blindmatchrace.classes.GetSailorsTask;
 import com.blindmatchrace.classes.SendDataHThread;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -24,38 +19,38 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
- * Main activity. Shows a google map with the sailors, buoys and current position.
- * 
+ * Administrator activity. Shows a google map with option to add buoys on it.
+ *
  */
-public class MainActivity extends FragmentActivity implements LocationListener {
+public class AdminActivity extends FragmentActivity implements LocationListener, OnClickListener {
 
 	// Application variables.
-	private String user = "", pass = "", event = "", fullUserName = "";
+	private String user = "", event = "";
 	private LocationManager locationManager;
-	private Circle[] buoyRadiuses = new Circle[C.MAX_BUOYS];
-	private MediaPlayer buoyBeep;
+	private boolean firstUse = true;
 	private boolean disableLocation = false;
 
 	// Views.
 	private Marker currentPosition;
-	private List<Marker> sailorMarkers = new ArrayList<Marker>();
 	private GoogleMap googleMap;
 	private TextView tvLat, tvLng, tvUser, tvSpeed, tvDirection, tvEvent;
+	private Button bBuoy1, bBuoy2, bBuoy3, bBuoy4, bBuoy5, bBuoy6, bBuoy7, bBuoy8, bBuoy9, bBuoy10;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_admin);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		// Disables lock-screen and keeps screen on.
@@ -69,11 +64,9 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 	 * Initialize components.
 	 */
 	private void initialize() {
-		// The user name, password and event number connected to the application.
+		// The user name and event number connected to the application.
 		user = getIntent().getStringExtra(C.USER_NAME);
-		pass = getIntent().getStringExtra(C.USER_PASS);
 		event = getIntent().getStringExtra(C.EVENT_NUM);
-		fullUserName = user + "_" + pass + "_" + event;
 
 		// Initialize location ability.
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -94,7 +87,7 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, C.ZOOM_LEVEL);
 		googleMap.animateCamera(cameraUpdate);
 
-		// Initializing TextViews.
+		// Initializing TextViews and Buttons.
 		tvLat = (TextView) findViewById(R.id.tvLat);
 		tvLng = (TextView) findViewById(R.id.tvLng);
 		tvSpeed = (TextView) findViewById(R.id.tvSpeed);
@@ -104,16 +97,27 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 		tvUser.setText(user.substring(6));
 		tvEvent.setText(event);
 
-		// Loads the buoy warning beep sound.
-		buoyBeep = MediaPlayer.create(this, R.raw.buoy_warning_beep);
+		bBuoy1 = (Button) findViewById(R.id.bBuoy1);
+		bBuoy2 = (Button) findViewById(R.id.bBuoy2);
+		bBuoy3 = (Button) findViewById(R.id.bBuoy3);
+		bBuoy4 = (Button) findViewById(R.id.bBuoy4);
+		bBuoy5 = (Button) findViewById(R.id.bBuoy5);
+		bBuoy6 = (Button) findViewById(R.id.bBuoy6);
+		bBuoy7 = (Button) findViewById(R.id.bBuoy7);
+		bBuoy8 = (Button) findViewById(R.id.bBuoy8);
+		bBuoy9 = (Button) findViewById(R.id.bBuoy9);
+		bBuoy10 = (Button) findViewById(R.id.bBuoy10);
 
-		// AsyncTask for getting the buoy's locations from DB and adding them to the google map.
-		GetBuoysTask getBuoys = new GetBuoysTask("GetBuoysTask", googleMap, buoyRadiuses, event);
-		getBuoys.execute(C.URL_CLIENTS_TABLE);
-
-		// AsyncTask for getting the sailor's locations from DB and adding them to the google map.
-		GetSailorsTask getSailors = new GetSailorsTask("GetSailorsTask", googleMap, sailorMarkers, fullUserName, event);
-		getSailors.execute(C.URL_CLIENTS_TABLE);
+		bBuoy1.setOnClickListener(this);
+		bBuoy2.setOnClickListener(this);
+		bBuoy3.setOnClickListener(this);
+		bBuoy4.setOnClickListener(this);
+		bBuoy5.setOnClickListener(this);
+		bBuoy6.setOnClickListener(this);
+		bBuoy7.setOnClickListener(this);
+		bBuoy8.setOnClickListener(this);
+		bBuoy9.setOnClickListener(this);
+		bBuoy10.setOnClickListener(this);		
 	}
 
 	@Override
@@ -128,27 +132,25 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		if (!disableLocation) {
-			// HandlerThread for sending the current location to DB.
-			SendDataHThread thread = new SendDataHThread("SendGPS");
-			thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+			// If true- enables the buoy buttons.
+			if (firstUse) {
+				firstUse = false;
+				bBuoy1.setEnabled(true);
+				bBuoy2.setEnabled(true);
+				bBuoy3.setEnabled(true);
+				bBuoy4.setEnabled(true);
+				bBuoy5.setEnabled(true);
+				bBuoy6.setEnabled(true);
+				bBuoy7.setEnabled(true);
+				bBuoy8.setEnabled(true);
+				bBuoy9.setEnabled(true);
+				bBuoy10.setEnabled(true);
+			}
 
 			String lat = new DecimalFormat("##.######").format(location.getLatitude());
 			String lng = new DecimalFormat("##.######").format(location.getLongitude());
 			String speed = "" + location.getSpeed();
 			String bearing = "" + location.getBearing();
-
-			thread.setFullUserName(fullUserName);
-			thread.setLat(lat);
-			thread.setLng(lng);
-			thread.setSpeed(speed);
-			thread.setBearing(bearing);
-			thread.setEvent(event);
-
-			thread.start();
-
-			// AsyncTask for getting the sailor's locations from DB and adding them to the google map.
-			GetSailorsTask getSailors = new GetSailorsTask("GetSailorsTask", googleMap, sailorMarkers, fullUserName, event);
-			getSailors.execute(C.URL_CLIENTS_TABLE);
 
 			// Updates TextViews in layout.
 			tvLat.setText(lat);
@@ -157,7 +159,7 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 			tvDirection.setText(bearing);
 
 			// Adds currentPosition marker to the google map.
-			LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+			LatLng latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
 			if (currentPosition != null) {
 				currentPosition.remove();
 			}
@@ -166,19 +168,6 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 			// Focus the camera on the currentPosition marker.
 			CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, C.ZOOM_LEVEL);
 			googleMap.animateCamera(cameraUpdate);
-
-			// Checks if the user is near a buoy by measuring the distance between the currentPosition marker and the radius around the buoys. If near then a beep sound is made.
-			float[] distance = new float[2];
-			for (int i = 0; i < buoyRadiuses.length; i++) {
-				if (buoyRadiuses[i] != null) {
-					Location.distanceBetween(currentPosition.getPosition().latitude, currentPosition.getPosition().longitude, buoyRadiuses[i].getCenter().latitude, buoyRadiuses[i].getCenter().longitude, distance);
-					if (distance[0] < buoyRadiuses[i].getRadius()) {
-						buoyBeep.start();
-						Toast.makeText(this, "Near a buoy! move away!", Toast.LENGTH_LONG).show();
-						break;
-					}
-				}
-			}
 		}
 	}
 
@@ -198,6 +187,76 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		// The buoy name with the event number.
+		String fullBuoyName = "";
+		switch (v.getId()) {
+		case R.id.bBuoy1:
+			fullBuoyName = C.BUOY_PREFIX + "1_" + event;
+			bBuoy1.setEnabled(false);
+			break;
+		case R.id.bBuoy2:
+			fullBuoyName = C.BUOY_PREFIX + "2_" + event;
+			bBuoy2.setEnabled(false);
+			break;
+		case R.id.bBuoy3:
+			fullBuoyName = C.BUOY_PREFIX + "3_" + event;
+			bBuoy3.setEnabled(false);
+			break;
+		case R.id.bBuoy4:
+			fullBuoyName = C.BUOY_PREFIX + "4_" + event;
+			bBuoy4.setEnabled(false);
+			break;
+		case R.id.bBuoy5:
+			fullBuoyName = C.BUOY_PREFIX + "5_" + event;
+			bBuoy5.setEnabled(false);
+			break;
+		case R.id.bBuoy6:
+			fullBuoyName = C.BUOY_PREFIX + "6_" + event;
+			bBuoy6.setEnabled(false);
+			break;
+		case R.id.bBuoy7:
+			fullBuoyName = C.BUOY_PREFIX + "7_" + event;
+			bBuoy7.setEnabled(false);
+			break;
+		case R.id.bBuoy8:
+			fullBuoyName = C.BUOY_PREFIX + "8_" + event;
+			bBuoy8.setEnabled(false);
+			break;
+		case R.id.bBuoy9:
+			fullBuoyName = C.BUOY_PREFIX + "9_" + event;
+			bBuoy9.setEnabled(false);
+			break;
+		case R.id.bBuoy10:
+			fullBuoyName = C.BUOY_PREFIX + "10_" + event;
+			bBuoy10.setEnabled(false);
+			break;
+		}
+
+		// HandlerThread for sending the buoy location to the DB through thread.
+		SendDataHThread thread = new SendDataHThread("SendBuoys");
+		thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+
+		String lat = new DecimalFormat("##.######").format(currentPosition.getPosition().latitude);
+		String lng = new DecimalFormat("##.######").format(currentPosition.getPosition().longitude);
+		String speed = "" + 0;
+		String bearing = "" + 0;
+
+		thread.setFullUserName(fullBuoyName);
+		thread.setLat(lat);
+		thread.setLng(lng);
+		thread.setSpeed(speed);
+		thread.setBearing(bearing);
+		thread.setEvent(event);
+
+		thread.start();
+
+		// Adds a buoy on the map.
+		LatLng latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
+		googleMap.addMarker(new MarkerOptions().position(latLng).title(fullBuoyName.split("_")[0]).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_buoy_low)));
 	}
 
 }
