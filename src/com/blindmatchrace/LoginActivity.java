@@ -170,12 +170,30 @@ public class LoginActivity extends Activity {
 		etEvent.setError(null);
 
 		// Store values at the time of the login attempt.
-		mUser = C.SAILOR_PREFIX + etUser.getText().toString();
+		mUser = etUser.getText().toString();
 		mPassword = etPass.getText().toString();
 		mEvent = etEvent.getText().toString();
 
 		boolean cancel = false;
 		View focusView = null;
+		
+		// Check for a valid user.
+				if (TextUtils.isEmpty(mUser)) {
+					etUser.setError(getString(R.string.error_field_required));
+					focusView = etUser;
+					cancel = true;
+				} 
+				else if (mUser.contains(" ")) {
+					etUser.setError(getString(R.string.error_invalid_user));
+					focusView = etUser;
+					cancel = true;
+				}
+				//eitamar
+				//add SAILOR_PREFIX afterwards check if the field is valid
+				else{
+					mUser = C.SAILOR_PREFIX + mUser;
+				}
+				//until here
 
 		// Check for a valid password.
 		if (TextUtils.isEmpty(mPassword)) {
@@ -188,23 +206,13 @@ public class LoginActivity extends Activity {
 			cancel = true;
 		}
 
-		// Check for a valid user.
-		if (TextUtils.isEmpty(mUser)) {
-			etUser.setError(getString(R.string.error_field_required));
-			focusView = etUser;
-			cancel = true;
-		} else if (mUser.contains(" ")) {
-			etUser.setError(getString(R.string.error_invalid_user));
-			focusView = etUser;
-			cancel = true;
-		}
 
 		// Check for a valid event.
 		if (TextUtils.isEmpty(mEvent)) {
 			etEvent.setError(getString(R.string.error_field_required));
 			focusView = etEvent;
 			cancel = true;
-		}
+		} 
 
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
@@ -273,6 +281,29 @@ public class LoginActivity extends Activity {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
+			try {
+				// koby
+				// Gets the admin data from DB and checks if the event is exits
+				String request = C.URL_CLIENTS_TABLE + "&Information=admin_admin_" + mEvent;
+				JSONObject json = JsonReader.readJsonFromUrl(request);
+				JSONArray jsonArray = json.getJSONArray("positions");
+				if (jsonArray.length() > 0) {
+					JSONObject jsonObj = (JSONObject) jsonArray.get(0);
+					if (!jsonObj.getString("event").equals(mEvent)){
+						return false;
+					}
+				}
+				else{
+					return false;
+				}
+			}
+			catch (JSONException e) {
+				return false;
+			}
+			catch (IOException e) {
+				return false;
+			}
+			//until here
 			if (mUser.equals("Sailoradmin") || mUser.equals("SailorAdmin")) {
 				adminRequest = true;
 				return mPassword.equals("admin") || mPassword.equals("Admin");
@@ -334,7 +365,7 @@ public class LoginActivity extends Activity {
 
 					intent = new Intent(LoginActivity.this, MenuActivity.class);
 				}
-				else {
+					else {
 					intent = new Intent(LoginActivity.this, MenuActivity.class);
 				}
 
