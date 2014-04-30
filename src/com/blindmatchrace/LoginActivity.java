@@ -281,6 +281,14 @@ public class LoginActivity extends Activity {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
+			if (mUser.equals("Sailoradmin") || mUser.equals("SailorAdmin")) {
+				adminRequest = true;
+				return mPassword.equals("admin") || mPassword.equals("Admin");
+			}
+
+			if (registerRequest) {
+				return true;
+			}
 			try {
 				// koby
 				// Gets the admin data from DB and checks if the event is exits
@@ -304,14 +312,7 @@ public class LoginActivity extends Activity {
 				return false;
 			}
 			//until here
-			if (mUser.equals("Sailoradmin") || mUser.equals("SailorAdmin")) {
-				adminRequest = true;
-				return mPassword.equals("admin") || mPassword.equals("Admin");
-			}
 
-			if (registerRequest) {
-				return true;
-			}
 
 			String name = "UserLoginTask";
 			try {
