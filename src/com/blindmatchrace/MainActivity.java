@@ -27,6 +27,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Process;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -63,7 +64,17 @@ public class MainActivity extends FragmentActivity implements LocationListener, 
 	private List<Marker> sailorMarkers = new ArrayList<Marker>();
 	private GoogleMap googleMap;
 	private TextView tvLat, tvLng, tvUser, tvSpeed, tvDirection, tvEvent;
+	Handler handler = new Handler();
+	Runnable r = new Runnable() {
+		
+		@Override
+		public void run() {
+			runnableGo();
+			
+		}
+	};
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -98,10 +109,24 @@ public class MainActivity extends FragmentActivity implements LocationListener, 
 					}
 			});
 		// JonM /> 
-		
-		initialize();
-	}
 
+		initialize();
+		
+
+		handler.postDelayed(r, 10000);
+		
+		
+	}
+	private void runnableGo(){
+		double speed =  Double.parseDouble(tvSpeed.getText().toString());
+		speed = Math.round(speed * 100);
+	    speed = speed / 100;
+		String speedtext = "Speed " +  speed;
+		String directiontext = "Direction " + tvDirection.getText().toString();
+		if(speedtext != null) mTts.speak(speedtext + " " + directiontext, TextToSpeech.QUEUE_FLUSH,  null);
+
+		handler.postDelayed(r, 10000);
+	}
 	/**
 	 * Initialize components.
 	 */
@@ -151,6 +176,7 @@ public class MainActivity extends FragmentActivity implements LocationListener, 
 		// AsyncTask for getting the sailor's locations from DB and adding them to the google map.
 		GetSailorsTask getSailors = new GetSailorsTask("GetSailorsTask", googleMap, sailorMarkers, fullUserName, event);
 		getSailors.execute(C.URL_CLIENTS_TABLE);
+		
 	}
 
 	@Override
@@ -216,6 +242,8 @@ public class MainActivity extends FragmentActivity implements LocationListener, 
 					}
 				}
 			}
+
+			
 		}
 	}
 

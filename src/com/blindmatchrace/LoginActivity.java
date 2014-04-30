@@ -297,8 +297,8 @@ public class LoginActivity extends Activity {
 				JSONArray jsonArray = json.getJSONArray("positions");
 				if (jsonArray.length() > 0) {
 					JSONObject jsonObj = (JSONObject) jsonArray.get(0);
-					if (!jsonObj.getString("event").equals(mEvent)){
-						return false;
+					if (jsonObj.getString("event").equals(mEvent)){
+						return true;
 					}
 				}
 				else{
