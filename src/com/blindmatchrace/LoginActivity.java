@@ -292,7 +292,7 @@ public class LoginActivity extends Activity {
 			try {
 				// koby
 				// Gets the admin data from DB and checks if the event is exits
-				String request = C.URL_CLIENTS_TABLE + "&Information=admin_admin_" + mEvent;
+				String request = C.URL_CLIENTS_TABLE + "&Information=" + C.SAILOR_PREFIX + "admin_admin_" + mEvent;
 				JSONObject json = JsonReader.readJsonFromUrl(request);
 				JSONArray jsonArray = json.getJSONArray("positions");
 				if (jsonArray.length() > 0) {
