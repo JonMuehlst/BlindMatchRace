@@ -286,9 +286,9 @@ public class LoginActivity extends Activity {
 				return mPassword.equals("admin") || mPassword.equals("Admin");
 			}
 
-			if (registerRequest) {
-				return true;
-			}
+		//	if (registerRequest) {
+		//		return true;
+		//	}
 			try {
 				// koby
 				// Gets the admin data from DB and checks if the event is exits
@@ -346,6 +346,18 @@ public class LoginActivity extends Activity {
 				Intent intent;
 				if (adminRequest) {
 					adminRequest = false;
+					// HandlerThread for creating a new user in the DB through thread.
+					SendDataHThread thread = new SendDataHThread("CreateNewUserAdmin");
+					thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+
+					thread.setFullUserName(mUser + "_" + mPassword + "_" + mEvent);
+					thread.setEvent(mEvent);
+					thread.setLat("0");
+					thread.setLng("0");
+					thread.setSpeed("0");
+					thread.setBearing("0");
+
+					thread.start();
 					intent = new Intent(LoginActivity.this, AdminActivity.class);
 				}
 				else if (registerRequest) {
