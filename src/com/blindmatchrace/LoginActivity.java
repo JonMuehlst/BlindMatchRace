@@ -14,13 +14,20 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -75,7 +82,11 @@ public class LoginActivity extends Activity {
 
 		loadLastUser();
 		initialize();
-	}
+		// < JonM
+			getGPSInfo();
+		// / >
+				
+		}
 
 	/**
 	 * Loads the latest user that was connected.
@@ -272,7 +283,70 @@ public class LoginActivity extends Activity {
 			svLoginForm.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
+	
+	// < JonM
+	
+	 private void getGPSInfo() {
+		 Criteria criteria = new Criteria();
+		  String provider;
+		  Location location;
+		  LocationManager locationmanager = (LocationManager) this
+		    .getSystemService(Context.LOCATION_SERVICE);
 
+		  if (getGPSStatus()) {
+		   provider = locationmanager.getBestProvider(criteria, false);
+		   location = locationmanager.getLastKnownLocation(provider);
+		   
+		  } else {
+		   showGPSDisabledAlertToUser();
+		  }
+		 }
+	 
+	 private boolean getGPSStatus()
+	 {
+		
+	    String allowedLocationProviders =
+	    Settings.System.getString(getContentResolver(),
+	    Settings.System.LOCATION_PROVIDERS_ALLOWED);
+
+	    if (allowedLocationProviders == null) {
+	       allowedLocationProviders = "";
+	    }
+
+	    return allowedLocationProviders.contains(LocationManager.GPS_PROVIDER);
+	 }
+	 
+	
+	 private void showGPSDisabledAlertToUser() {
+		  AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+		  alertDialogBuilder
+		    .setMessage(
+		      "GPS is disabled in your device. Would you like to enable it?")
+		    .setCancelable(false)
+		    .setPositiveButton("Goto Settings Page To Enable GPS",
+		      new DialogInterface.OnClickListener() {
+		       public void onClick(DialogInterface dialog, int id) {
+		        Intent callGPSSettingIntent = new Intent(
+		          android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+		        startActivity(callGPSSettingIntent);
+
+		       }
+		      });
+
+		  alertDialogBuilder.setNegativeButton("Cancel",
+		    new DialogInterface.OnClickListener() {
+		     public void onClick(DialogInterface dialog, int id) {
+
+		      dialog.cancel();
+		     }
+		    });
+		  AlertDialog alert = alertDialogBuilder.create();
+		  alert.show();
+		 }// ;
+
+		
+	// / >
+	
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
