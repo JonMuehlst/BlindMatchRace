@@ -313,7 +313,7 @@ public class LoginActivity extends Activity {
 			}
 			//until here
 
-
+			// the following code block is unreachable {
 			String name = "UserLoginTask";
 			try {
 				// Gets the user data from DB and checks if the user's data match.
@@ -335,6 +335,8 @@ public class LoginActivity extends Activity {
 			}
 
 			return false;
+			
+			// }
 		}
 
 		@Override
@@ -396,8 +398,11 @@ public class LoginActivity extends Activity {
 				finish();
 			}
 			else {
-				etPass.setError(getString(R.string.error_incorrect_pass_event));
-				etEvent.setError(getString(R.string.error_incorrect_pass_event));
+				//etPass.setError(getString(R.string.error_incorrect_pass_event));
+				//etEvent.setError(getString(R.string.error_incorrect_pass_event));
+				// < JonM
+				etEvent.setError(getString(R.string.error_empty_event));
+				// / >
 				etEvent.requestFocus();
 			}
 		}
