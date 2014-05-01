@@ -1,5 +1,13 @@
 package com.blindmatchrace.classes;
 
+import java.io.IOException;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.blindmatchrace.modules.JsonReader;
+
 import android.os.Environment;
 
 /**
@@ -7,7 +15,7 @@ import android.os.Environment;
  *
  */
 public class C {
-
+	
 	// Location constants.
 	public static final long MIN_TIME = 4000;
 	public static final float MIN_DISTANCE = 10f;
@@ -35,4 +43,6 @@ public class C {
 
 	// Data constants.
 	public static final String APP_DIR = Environment.getExternalStorageDirectory().getPath() + "/BlindMatchRace/";
+	
+
 }
