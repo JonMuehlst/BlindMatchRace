@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.location.Criteria;
 import android.location.Location;
@@ -123,9 +124,12 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-
+		Intent intent;
 		// Disables the location changed code.
 		disableLocation = true;
+		intent = new Intent(AdminActivity.this, LoginActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
 		finish();
 	}
 

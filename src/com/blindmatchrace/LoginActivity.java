@@ -344,7 +344,6 @@ public class LoginActivity extends Activity {
 		  alert.show();
 		 }// ;
 
-		
 	// / >
 	
 	/**
