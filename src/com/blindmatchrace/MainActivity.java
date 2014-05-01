@@ -125,7 +125,7 @@ public class MainActivity extends FragmentActivity implements LocationListener, 
 		String directiontext = "Direction " + tvDirection.getText().toString();
 		if(speedtext != null) mTts.speak(speedtext + " " + directiontext, TextToSpeech.QUEUE_FLUSH,  null);
 
-		handler.postDelayed(r, 10000);
+		handler.postDelayed(r, 20000);
 	}
 	/**
 	 * Initialize components.
