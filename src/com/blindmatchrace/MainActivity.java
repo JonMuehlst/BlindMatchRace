@@ -113,17 +113,19 @@ public class MainActivity extends FragmentActivity implements LocationListener, 
 		initialize();
 		
 
-		handler.postDelayed(r, 10000);
+		handler.postDelayed(r, 1000);
 		
 		
 	}
 	private void runnableGo(){
-		double speed =  Double.parseDouble(tvSpeed.getText().toString());
-		speed = Math.round(speed * 100);
-	    speed = speed / 100;
-		String speedtext = "Speed " +  speed;
-		String directiontext = "Direction " + tvDirection.getText().toString();
-		if(speedtext != null) mTts.speak(speedtext + " " + directiontext, TextToSpeech.QUEUE_FLUSH,  null);
+		if(tvSpeed.getText().length() > 0 && tvDirection.getText().length() > 0){
+			double speed =  Double.parseDouble(tvSpeed.getText().toString());
+			speed = Math.round(speed * 100);
+		    speed = speed / 100;
+			String speedtext = "Speed " +  speed;
+			String directiontext = "Direction " + tvDirection.getText().toString();
+			mTts.speak(speedtext + " " + directiontext, TextToSpeech.QUEUE_FLUSH,  null);
+		}
 
 		handler.postDelayed(r, 20000);
 	}
