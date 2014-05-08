@@ -50,9 +50,9 @@
 		<!-- arctan key -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAdcsLpAC5n4OMJ0mXsR_N7DJWWqtmuIgo" />
-		
-        <activity android:name="com.blindmatchrace.MenuActivity" >
+            android:value="AIzaSyAMVmRp6nsGN3vX0Gx2yU-nzWrQa2c_uOc" />
+		<activity android:name="com.blindmatchrace" >
+        <!--  <activity android:name="com.blindmatchrace.MenuActivity" > -->
         </activity>
     </application>
 
