@@ -22,6 +22,9 @@ public class SendDataHThread extends HandlerThread {
 	private String lat, lng, speed, bearing, event;
 	private String name, fullUserName;
 
+	// JonM
+	public Exception exception = null;
+	
 	public SendDataHThread(String name) {
 		super(name);
 		this.name = name;
@@ -29,13 +32,23 @@ public class SendDataHThread extends HandlerThread {
 
 	@Override
 	public void run() {
-		httpConnSendData();
+		try {
+			httpConnSendData();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			exception = e;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			exception = e;
+		}
 	}
 
 	/**
 	 * Creates the HTTP connection for sending data to DB.
 	 */
-	private void httpConnSendData() {
+	private void httpConnSendData() throws IOException, MalformedURLException{
 		try {
 			URL url = new URL(C.URL_INSERT_CLIENT + "&Latitude=" + lat +"&Longitude=" + lng +"&Pressure="+ speed + "&Azimuth="+ bearing + "&Bearing=" + bearing + "&Information=" + fullUserName + "&Event=" + event);
 			urlConnection = (HttpURLConnection) url.openConnection();
@@ -53,14 +66,17 @@ public class SendDataHThread extends HandlerThread {
 			catch (IOException e) {
 				Log.i(name, "IOException");
 				urlConnection.disconnect();
+				throw e;
 			}
 			urlConnection.disconnect();
 		}
 		catch (MalformedURLException e) {
 			Log.i(name, "MalformedURLException");
+			throw e;
 		}
 		catch (IOException e) {
 			Log.i(name, "IOException");
+			throw e;
 		}
 	}
 

@@ -6,6 +6,8 @@ import junit.framework.TestCase;
 
 public class SendDataHThreadTest extends TestCase {
 
+	public static final int TIMEOUT = 2500;
+	
 	public SendDataHThreadTest(String name) {
 		super(name);
 	}
@@ -18,7 +20,7 @@ public class SendDataHThreadTest extends TestCase {
 		super.tearDown();
 	}
 	
-	public void testHttpConnSendData(){
+	public void testHttpConnSendData() throws Exception{
 		 SendDataHThread SDHT = new SendDataHThread("test");
 		 SDHT.setLat("32.103758");
 		 SDHT.setLng("35.2046"); 
@@ -27,6 +29,9 @@ public class SendDataHThreadTest extends TestCase {
 		 SDHT.setFullUserName("test");
 		 SDHT.setEvent("1234");
 		 SDHT.run();
+		 if(SDHT.exception != null){
+			throw SDHT.exception;
+		}
 		 
 	}
 }
