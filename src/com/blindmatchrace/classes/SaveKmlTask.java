@@ -33,6 +33,9 @@ public class SaveKmlTask extends AsyncTask<String, Integer, Map<Long, LatLng>> {
 	private Context context;
 	private String name, fullUserName;
 	private int kmlVer;
+	
+//	JonM
+	public Exception exception = null;
 
 	public SaveKmlTask(Context context, String name, String fullUserName, int kmlVer) {
 		super();
@@ -91,10 +94,12 @@ public class SaveKmlTask extends AsyncTask<String, Integer, Map<Long, LatLng>> {
 		}
 		catch (JSONException e) {
 			Log.i(name, "JSONException");
+			exception = e;
 			return null;
 		}
 		catch (IOException e) {
 			Log.i(name, "IOException");
+			exception = e;
 			return null;
 		}
 	}
