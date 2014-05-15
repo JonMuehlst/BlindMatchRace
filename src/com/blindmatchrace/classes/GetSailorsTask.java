@@ -29,6 +29,8 @@ public class GetSailorsTask extends AsyncTask<String, Integer, Map<String, LatLn
 
 	// Application variables.
 	private String name = "", fullUserName = "", event = "";
+//	JonM
+	public Exception exception = null;
 
 	// Views.
 	private List<Marker> sailorMarkers = new ArrayList<Marker>();
@@ -72,10 +74,12 @@ public class GetSailorsTask extends AsyncTask<String, Integer, Map<String, LatLn
 		}
 		catch (JSONException e) {
 			Log.i(name, "JSONException");
+			exception = e;
 			return null;
 		}
 		catch (IOException e) {
 			Log.i(name, "IOException");
+			exception = e;
 			return null;
 		}
 	}
@@ -98,6 +102,30 @@ public class GetSailorsTask extends AsyncTask<String, Integer, Map<String, LatLn
 				sailorMarkers.add(googleMap.addMarker(new MarkerOptions().position(latLng).title(sailorName).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_sailor_low))));
 			}
 		}
+	}
+
+	public List<Marker> getSailorMarkers() {
+		return sailorMarkers;
+	}
+
+	public void setSailorMarkers(List<Marker> sailorMarkers) {
+		this.sailorMarkers = sailorMarkers;
+	}
+
+	public GoogleMap getGoogleMap() {
+		return googleMap;
+	}
+
+	public void setGoogleMap(GoogleMap googleMap) {
+		this.googleMap = googleMap;
+	}
+
+	public Exception getException() {
+		return exception;
+	}
+
+	public void setException(Exception exception) {
+		this.exception = exception;
 	}
 
 }

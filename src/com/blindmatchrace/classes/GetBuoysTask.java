@@ -32,6 +32,8 @@ public class GetBuoysTask extends AsyncTask<String, Integer, Map<String, LatLng>
 	// Application variables.
 	private String name = "", event = "";
 	private Circle[] buoyRadiuses = new Circle[C.MAX_BUOYS];
+//	JonM
+	public Exception exception = null;
 
 	// Views.
 	private GoogleMap googleMap;
@@ -70,10 +72,12 @@ public class GetBuoysTask extends AsyncTask<String, Integer, Map<String, LatLng>
 		}
 		catch (JSONException e) {
 			Log.i(name, "JSONException");
+			exception = e;
 			return null;
 		}
 		catch (IOException e) {
 			Log.i(name, "IOException");
+			exception = e;
 			return null;
 		}
 	}
@@ -106,6 +110,14 @@ public class GetBuoysTask extends AsyncTask<String, Integer, Map<String, LatLng>
 			CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, C.ZOOM_LEVEL);
 			googleMap.animateCamera(cameraUpdate);
 		}
+	}
+
+	public Exception getException() {
+		return exception;
+	}
+
+	public void setException(Exception exception) {
+		this.exception = exception;
 	}
 
 }
