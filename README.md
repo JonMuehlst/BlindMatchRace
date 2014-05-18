@@ -12,7 +12,7 @@ After placing the buoy it will appear on screen as a red buoy and its’ button 
  
 ![Alt text](/../screenshots/screenshots/admin_buoy_pressed.jpg?raw=true "admin_buoy_pressed screen") 
  
-Once all buoys are set in place the sailors can sign in with their username, password and the event number which was set by the admin in the login screen:
+Once all buoys are set in place the sailors can sign in with their username, password and the event number which was set by the admin:
  
 ![Alt text](/../screenshots/screenshots/login2.jpg?raw=true "login screen")
 
